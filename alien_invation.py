@@ -6,6 +6,7 @@ from ship import Ship
 import game_functions as gf
 from game_stats import GameStats
 from button import Button
+from scorebard import Scorebard
 
 def run_game():
     #Initialize game setting and screen object
@@ -19,6 +20,9 @@ def run_game():
 
     #create an instance to store game statistics
     stats = GameStats(ai_setting)
+
+    #make the level buttom
+    sb = Scorebard(ai_setting, screen, stats) 
 
     #make a ship
     ship = Ship(ai_setting,screen)
@@ -35,9 +39,9 @@ def run_game():
         gf.check_events(ai_setting, screen, stats, play_button,ship, bullets, aliens)
         if stats.game_active:
             ship.update()
-            gf.update_bullets(ai_setting, screen, ship, aliens, bullets)
+            gf.update_bullets(ai_setting, stats, screen, ship, aliens, bullets,sb)
             gf.update_aliens(ai_setting, stats, screen, ship, aliens, bullets)    
-        gf.update_screen(ai_setting,screen, stats, ship, aliens, bullets, play_button)
+        gf.update_screen(ai_setting,screen, stats, ship, aliens, bullets, play_button, sb)
              
 
 

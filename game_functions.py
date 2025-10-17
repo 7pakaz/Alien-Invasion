@@ -66,7 +66,7 @@ def check_play_button(ai_setting, screen, stats, play_button,ship, bullets, alie
         ship.center_ship()
 
 
-def update_screen(ai_setting,screen, stats, ship, aliens, bullets, play_button):
+def update_screen(ai_setting,screen, stats, ship, aliens, bullets, play_button,sb):
     """Update images on the screen and flip to the new screen."""
     #Redraw the screen during each pass through the lloop
     screen.fill(ai_setting.bg_color)
@@ -75,6 +75,7 @@ def update_screen(ai_setting,screen, stats, ship, aliens, bullets, play_button):
         bullet.draw_bullet()
     ship.blitme()
     aliens.draw(screen)
+    sb.show_level()
     #Draw play button if the game is inactive
     if not stats.game_active:
         play_button.draw_button()
@@ -89,16 +90,16 @@ def fire_bullet(ai_setting, screen, ship, bullets):
         bullets.add(new_bullet)
 
 
-def update_bullets(ai_setting, screen, ship, aliens, bullets):
+def update_bullets(ai_setting, stats, screen, ship, aliens, bullets,sb):
     bullets.update()
     #get rid of bullets that have disappeared
     for bullet in bullets.copy():
         if bullet.rect.bottom <=0:
             bullets.remove(bullet)
-    check_bullet_alien_collisions(ai_setting, screen, ship, aliens, bullets)
+    check_bullet_alien_collisions(ai_setting, stats, screen, ship, aliens, bullets,sb)
     
 
-def check_bullet_alien_collisions(ai_setting, screen, ship, aliens, bullets):
+def check_bullet_alien_collisions(ai_setting, stats, screen, ship, aliens, bullets, sb):
     """Respond to bullet-alien collisions."""
     # Remove any bullets and aliens that have collided.
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
@@ -107,6 +108,10 @@ def check_bullet_alien_collisions(ai_setting, screen, ship, aliens, bullets):
         #Destroy existin bullets and create new fleet.
         bullets.empty()
         ai_setting.next_level()
+        check_level(stats)
+        sb.level_number()
+        print(stats.score)
+        sleep(0.5)
         create_fleet(ai_setting, screen, ship, aliens)
 
 
@@ -207,3 +212,6 @@ def check_aliens_bottom(ai_setting, stats, screen, ship, aliens, bullets):
             ship_hit(ai_setting, stats, screen, ship, aliens, bullets)
             break
 
+def check_level(stats):
+    '''levels up when the entire fleet is killed'''
+    stats.score += 1
