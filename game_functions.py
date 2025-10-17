@@ -104,13 +104,17 @@ def check_bullet_alien_collisions(ai_setting, stats, screen, ship, aliens, bulle
     # Remove any bullets and aliens that have collided.
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
 
+    #increase points if an alien is killed
+    if collisions:
+        update_score(stats)
+        sb.score_number()
+
     if len(aliens) == 0:
         #Destroy existin bullets and create new fleet.
         bullets.empty()
         ai_setting.next_level()
-        check_level(stats)
+        update_level(stats)
         sb.level_number()
-        print(stats.score)
         sleep(0.5)
         create_fleet(ai_setting, screen, ship, aliens)
 
@@ -136,7 +140,7 @@ def create_alien(ai_setting, screen, aliens, alien_number,row):
     alien.x = alien_width + 2 * alien_width * alien_number
     alien.y = alien_height + 2 * row * alien_height
     alien.rect.x = alien.x
-    alien.rect.y = alien.y
+    alien.rect.y = alien.y + 20 
     aliens.add(alien)
 
 
@@ -198,7 +202,7 @@ def change_fleet_direction(aliens, ai_setting):
     """Drop the entire fleet and change the fleet's direction."""
     for alien in aliens.sprites():
         alien.y += alien.ai_setting.fleet_drop_speed
-        alien.rect.y = alien.y
+        alien.rect.y = alien.y + 15
 
     ai_setting.fleet_direction  = -1 * ai_setting.fleet_direction 
 
@@ -212,6 +216,10 @@ def check_aliens_bottom(ai_setting, stats, screen, ship, aliens, bullets):
             ship_hit(ai_setting, stats, screen, ship, aliens, bullets)
             break
 
-def check_level(stats):
+def update_level(stats):
     '''levels up when the entire fleet is killed'''
-    stats.score += 1
+    stats.level += 1
+
+def update_score(stats):
+    '''increase score if an alien is killed'''
+    stats.score += 50

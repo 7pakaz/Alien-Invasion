@@ -18,10 +18,8 @@ def run_game():
     #make the play buttom
     play_button = Button(ai_setting, screen, 'PLAY GAME')
 
-    #create an instance to store game statistics
-    stats = GameStats(ai_setting)
-
-    #make the level buttom
+    #create an instance to store game statistics and create a scoreboard
+    stats = GameStats(ai_setting) 
     sb = Scorebard(ai_setting, screen, stats) 
 
     #make a ship

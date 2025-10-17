@@ -15,7 +15,7 @@ class Alien(Sprite):
 
         #Start each new alien at the bottom center of the screen
         self.rect.x = self.rect.width
-        self.rect.y = self.rect.height
+        self.rect.y = self.rect.height 
 
         #store a decimal value for the alien's bottom
         self.x = float(self.rect.x)
