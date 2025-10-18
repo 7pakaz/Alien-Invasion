@@ -30,7 +30,7 @@ def check_keyup_events(event,ship):
         ship.moving_down = False
 
 
-def check_events(ai_setting, screen, stats, play_button,ship, bullets, aliens):
+def check_events(ai_setting, screen, stats, play_button,ship, bullets, aliens,sb):
     """Respond to keypresses and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -43,10 +43,10 @@ def check_events(ai_setting, screen, stats, play_button,ship, bullets, aliens):
         #Start the game
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(ai_setting, screen, stats, play_button,ship, bullets, aliens, mouse_x, mouse_y)
+            check_play_button(ai_setting, screen, stats, play_button,ship, bullets, aliens, mouse_x, mouse_y,sb)
 
 
-def check_play_button(ai_setting, screen, stats, play_button,ship, bullets, aliens, mouse_x, mouse_y):
+def check_play_button(ai_setting, screen, stats, play_button,ship, bullets, aliens, mouse_x, mouse_y,sb):
     '''Start a new game when the player click play'''
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
     if button_clicked and not stats.game_active:
@@ -60,6 +60,10 @@ def check_play_button(ai_setting, screen, stats, play_button,ship, bullets, alie
         #empty the list of aliens and bullets
         aliens.empty()
         bullets.empty()
+
+        #reset scoreboard
+        sb.show_level()
+
 
         #create a new fleet and center de ship
         create_fleet(ai_setting,screen,ship,aliens)
@@ -106,15 +110,14 @@ def check_bullet_alien_collisions(ai_setting, stats, screen, ship, aliens, bulle
 
     #increase points if an alien is killed
     if collisions:
-        update_score(stats)
-        sb.score_number()
+        update_score(stats, sb)
+        chek_best_score(stats, sb)
 
     if len(aliens) == 0:
         #Destroy existin bullets and create new fleet.
         bullets.empty()
         ai_setting.next_level()
-        update_level(stats)
-        sb.level_number()
+        update_level(stats, sb)
         sleep(0.5)
         create_fleet(ai_setting, screen, ship, aliens)
 
@@ -157,7 +160,7 @@ def create_fleet(ai_setting, screen, ship, aliens):
             create_alien(ai_setting, screen, aliens, alien_number, row)
 
 
-def update_aliens(ai_setting, stats, screen, ship, aliens, bullets):
+def update_aliens(ai_setting, stats, screen, ship, aliens, bullets,sb):
     """
     Check if the fleet is at an edge,
     and then update the postions of all aliens in the fleet.
@@ -168,10 +171,10 @@ def update_aliens(ai_setting, stats, screen, ship, aliens, bullets):
     aliens.update()
     #look for alien-ship collisions
     if pygame.sprite.spritecollideany(ship, aliens):
-        ship_hit(ai_setting, stats, screen, ship, aliens, bullets)
+        ship_hit(ai_setting, stats, screen, ship, aliens, bullets,sb)
 
 
-def ship_hit(ai_setting, stats, screen, ship, aliens, bullets):
+def ship_hit(ai_setting, stats, screen, ship, aliens, bullets,sb):
     """Respond to ship being hit by alien."""
     if stats.ships_left > 0:
         # Decrement ships_left
@@ -179,6 +182,7 @@ def ship_hit(ai_setting, stats, screen, ship, aliens, bullets):
         # Empty the list of aliens and bullets.
         bullets.empty()
         aliens.empty()
+        sb.ship_number()
         #Create a new fleet and center the ship
         create_fleet(ai_setting, screen, ship, aliens)
         ship.center_ship()
@@ -216,10 +220,20 @@ def check_aliens_bottom(ai_setting, stats, screen, ship, aliens, bullets):
             ship_hit(ai_setting, stats, screen, ship, aliens, bullets)
             break
 
-def update_level(stats):
+def update_level(stats, sb):
     '''levels up when the entire fleet is killed'''
     stats.level += 1
+    sb.level_number()
 
-def update_score(stats):
+def update_score(stats, sb):
     '''increase score if an alien is killed'''
     stats.score += 50
+    sb.score_number()
+
+
+def chek_best_score(stats,sb):
+    #best score
+    if stats.score > stats.best_score:
+        stats.best_score = stats.score
+        sb.best_score_number()
+        
