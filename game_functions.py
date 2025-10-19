@@ -1,6 +1,8 @@
 import sys
 from time import sleep
 import pygame
+import json
+
 from bullet import Bullet
 from alien import Alien
 
@@ -111,7 +113,6 @@ def check_bullet_alien_collisions(ai_setting, stats, screen, ship, aliens, bulle
     #increase points if an alien is killed
     if collisions:
         update_score(stats, sb)
-        chek_best_score(stats, sb)
 
     if len(aliens) == 0:
         #Destroy existin bullets and create new fleet.
@@ -167,7 +168,7 @@ def update_aliens(ai_setting, stats, screen, ship, aliens, bullets,sb):
     """
     check_fleet_edges(aliens, ai_setting)
     # Look for aliens hitting the bottom of the screen
-    check_aliens_bottom(ai_setting, stats, screen, ship, aliens, bullets)
+    check_aliens_bottom(ai_setting, stats, screen, ship, aliens, bullets,sb)
     aliens.update()
     #look for alien-ship collisions
     if pygame.sprite.spritecollideany(ship, aliens):
@@ -211,13 +212,13 @@ def change_fleet_direction(aliens, ai_setting):
     ai_setting.fleet_direction  = -1 * ai_setting.fleet_direction 
 
 
-def check_aliens_bottom(ai_setting, stats, screen, ship, aliens, bullets):
+def check_aliens_bottom(ai_setting, stats, screen, ship, aliens, bullets, sb):
     """Check if any aliens have reached the bottom of the screen."""
     screen_rect = screen.get_rect()
     for alien in aliens.sprites():
         if alien.rect.bottom >= screen_rect.bottom:
             # Treat this the same as if the ship got hit
-            ship_hit(ai_setting, stats, screen, ship, aliens, bullets)
+            ship_hit(ai_setting, stats, screen, ship, aliens, bullets, sb)
             break
 
 def update_level(stats, sb):
@@ -229,11 +230,22 @@ def update_score(stats, sb):
     '''increase score if an alien is killed'''
     stats.score += 50
     sb.score_number()
+    chek_best_score(stats,sb)
 
 
 def chek_best_score(stats,sb):
     #best score
     if stats.score > stats.best_score:
         stats.best_score = stats.score
+        save_best_score(stats)
         sb.best_score_number()
+
+def save_best_score(stats):
+    file_name = r'store_information\store_best_score.json'
+
+    with open(file_name, 'w') as f_objt:
+        json.dump(stats.best_score, f_objt)
+    print(stats.best_score)
+    
+    
         

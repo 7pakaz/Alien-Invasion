@@ -26,7 +26,7 @@ def run_game():
     aliens = Group()
 
     #create an instance to store game statistics and create a scoreboard
-    stats = GameStats(ai_setting) 
+    stats = GameStats(ai_setting)  
     sb = Scorebard(ai_setting, screen, stats) 
 
 
