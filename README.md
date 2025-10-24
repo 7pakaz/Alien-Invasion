@@ -66,7 +66,7 @@ python alien_invation.py
 
 ---
 
-## 🧱 Estructura del proyecto (actual en tu repo)
+## 🧱 Estructura del proyecto 
 
 ```
 Alien-Invasion/
