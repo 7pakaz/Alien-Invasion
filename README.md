@@ -145,8 +145,3 @@ Alien-Invasion/
 * Guía oficial de Python `venv`: [https://docs.python.org/3/library/venv.html](https://docs.python.org/3/library/venv.html)
 
 ---
-
-## 📝 Notas finales
-
-* Si tu archivo principal se llamaba `alien_invation.py`, cámbialo a `alien_invasion.py` para que coincida con el estándar del libro y evitar confusiones.
-* Si deseas, agrega una sección **Changelog** para registrar mejoras por versión.
